@@ -33,12 +33,15 @@ public class CopyThrow : MonoBehaviour{
         m_transform.rotation = Quaternion.identity;
     }
 
-    public void ThrowDie(float m_Thrust, float m_Angle, int max_child) {
+    public void ThrowDie(float m_Thrust, float m_Angle, Vector3 m_torque, int max_child) {
         //Debug.Log("copy die thrown, speed=" + m_Thrust + ", angle=" + m_Angle);  //print debug message
         rearange(max_child);
         m_transform.eulerAngles = new Vector3(0f, m_Angle, 0f); //set angle
         m_Rigidbody.useGravity = true;                      //unfreeze
         m_Rigidbody.AddForce(transform.forward * m_Thrust); //add frorce to throw
+        m_Rigidbody.AddTorque(transform.forward * m_torque.x);
+        m_Rigidbody.AddTorque(transform.right * m_torque.y);
+        m_Rigidbody.AddTorque(transform.up * m_torque.z);
     }
 
     private void rearange(int max_child) {

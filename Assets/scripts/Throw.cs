@@ -7,11 +7,13 @@ public class Throw : MonoBehaviour{
     //this cube's properties
     private Rigidbody m_Rigidbody;
     private Transform m_transform;
-    private const float min_Trust = 500f;
-    private const float max_Trust = 2000f;
+    private const float min_Trust = 400f;
+    private const float max_Trust = 1000f;
     private const float max_Angle = 40f;
+    private const float min_torque = 4000f;
+    private const float max_torque = 10000f;
     private float m_Thrust, m_Angle;
-    private Vector3 init_pos;
+    private Vector3 init_pos, m_torque;
     private GameObject[] childsG;
 
     //copycat cube's properties
@@ -71,7 +73,7 @@ public class Throw : MonoBehaviour{
             }
         }
         Time.timeScale = 1.0f;
-        copyScript.ThrowDie(m_Thrust, m_Angle, max_child+1);
+        copyScript.ThrowDie(m_Thrust, m_Angle, m_torque, max_child +1);
     }
 
     private void ResetDie() {                               //resets this die
@@ -84,11 +86,17 @@ public class Throw : MonoBehaviour{
     }
 
     private void ThrowDie() {
-        m_Thrust = Random.Range(min_Trust, max_Trust);      //get random thrust force
-        m_Angle = Random.Range(-max_Angle, max_Angle);      //get random angle
-        //Debug.Log("die thrown, speed=" + m_Thrust + ", angle=" + m_Angle);  //print debug message
-        m_transform.eulerAngles = new Vector3(0f, m_Angle, 0f); //set angle
-        m_Rigidbody.useGravity = true;                      //unfreeze
-        m_Rigidbody.AddForce(transform.forward * m_Thrust); //add frorce to throw
+        m_Thrust = Random.Range(min_Trust, max_Trust);              // get random thrust force
+        m_Angle = Random.Range(-max_Angle, max_Angle);              // get random angle
+        m_torque.x = Random.Range(min_torque, max_torque);          // get random torque for x
+        m_torque.y = Random.Range(min_torque, max_torque);          // get random torque for y
+        m_torque.z = Random.Range(min_torque, max_torque);          // get random torque for z
+        //Debug.Log("die thrown, speed=" + m_Thrust + ", angle=" + m_Angle);  // print debug message
+        m_transform.eulerAngles = new Vector3(0f, m_Angle, 0f);     // set angle
+        m_Rigidbody.useGravity = true;                              // unfreeze
+        m_Rigidbody.AddForce(transform.forward * m_Thrust);         // add frorce to throw
+        m_Rigidbody.AddTorque(transform.forward * m_torque.x);
+        m_Rigidbody.AddTorque(transform.right * m_torque.y);
+        m_Rigidbody.AddTorque(transform.up * m_torque.z);
     }
 }
